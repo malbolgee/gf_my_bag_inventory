@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <search.h>
 #include <errno.h>
-#include <zlib.h> // TODO: Make the Windows port
+#include <zlib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
@@ -107,19 +107,16 @@ package_t *read_index(char *file_name)
     stat(file_name, &st);
     size_t index_byte_size = st.st_size;
 
-    package_t *data = (package_t *)malloc(index_byte_size - HEADER_SIZE - CRC_SIZE);
     ensure(((index_byte_size - HEADER_SIZE - CRC_SIZE) % sizeof(package_t)) == 0, "Invalid filesize");
+
+    package_t *data = (package_t *)malloc(index_byte_size - HEADER_SIZE - CRC_SIZE);
+    alloc_check(data, "Couldn't allocate data for package");
 
     FILE *pkg = fopen(file_name, "rb");
     open_file_check(pkg);
 
-    int crc = 0;
-    char buffer[HEADER_SIZE] = {0};
-
-    // ? Maybe leave everything inside the struct?
-    fread(buffer, sizeof(char), HEADER_SIZE, pkg);
+    fseek(pkg, HEADER_SIZE, SEEK_SET);
     fread(data, sizeof(package_t), index_byte_size - HEADER_SIZE - CRC_SIZE, pkg);
-    fread(&crc, sizeof(char), CRC_SIZE, pkg);
 
     fclose(pkg);
 
@@ -150,11 +147,6 @@ char *zlib_decompress(char *data, uInt decompressed_size, uInt compressed_size)
 void unpack(package_t pkg_file)
 {
 
-    // Allocate memory to this string will cause a memory leak because the program
-    // is not maintaining a list of the generated pkg_names, so it will be impossible
-    // to deallocate later. Nevertheless, in practice, this is not a problem once the
-    // deallocation must happen only when all package names have been processed
-    // and this is precisely when the program ends.
     char *pkg_name = (char *)malloc(PKG_NAME_MAX_SIZE);
     alloc_check(pkg_name, "Could not allocate space for pkg name");
     sprintf(pkg_name, "pkg%03d.pkg", pkg_file.pkg_num);
