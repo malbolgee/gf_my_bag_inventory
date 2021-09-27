@@ -23,11 +23,19 @@
 
 #define DATA_SIZE(TOTAL_BYTES_READ) ((TOTAL_BYTES_READ - HEADER_SIZE - CRC_SIZE) / sizeof(package_t))
 
+typedef void (*strategy_fn_arr) (package_t *, int);
+
 #include "pkg.h"
 
 package_t *read_index(char *file_name);
 void rec_mkdir(char *path);
 void unpack(package_t pkg_file);
 char *zlib_decompress(char *data, uInt decompressed_size, uInt compressed_size);
+bool in(char *s1, char *s2[], int size);
+
+void extract_all(package_t *data, int size);
+void extract_icon(package_t *data, int size);
+void extract_ride(package_t *data, int size);
+void extract_data(package_t *data, int size);
 
 #endif

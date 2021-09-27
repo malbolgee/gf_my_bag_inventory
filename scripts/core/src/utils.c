@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../includes/pkg.h"
 #include "../includes/utils.h"
 
@@ -15,12 +16,6 @@ void open_file_check(const void *mem)
 {
 
     alloc_check(mem, "Couldn't open the file.");
-}
-
-void usage()
-{
-
-    puts("./extract <path_to_pkg.idx>");
 }
 
 void ensure(bool expression, char *message)

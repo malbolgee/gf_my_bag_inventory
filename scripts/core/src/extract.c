@@ -7,22 +7,37 @@
 #include <zlib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <argp.h>
 #include "../includes/pkg.h"
 #include "../includes/extrac.h"
 #include "../includes/utils.h"
+#include "../includes/parser.h"
+
+#include <time.h>
 
 ENTRY entry_data, *file_cache;
+
+static strategy_fn_arr extract_strategy[] = {extract_all, extract_icon, extract_ride, extract_data};
+
+#ifdef DEBUG
+#define DEBUG_TEST 1
+#else
+#define DEBUG_TEST 0
+#endif
+
+#define D(fmt, ...) \
+        do { if (DEBUG_TEST) fprintf(stderr, "%s:%d:%s(): \n" fmt, __FILE__, \
+                                __LINE__, __func__, __VA_ARGS__); } while (0)
 
 int main(int argc, char **argv)
 {
 
-    if (argc != 2)
-        usage(), exit(EXIT_FAILURE);
-
-    package_t *data = read_index(argv[1]);
+    int index = parse(argc, argv);
+    char *pkg_path = get_pkg_path();
+    package_t *data = read_index(pkg_path);
 
     struct stat st;
-    stat(argv[1], &st);
+    stat(pkg_path, &st);
     size_t index_byte_size = st.st_size;
     index_byte_size = DATA_SIZE(index_byte_size);
 
@@ -30,13 +45,7 @@ int main(int argc, char **argv)
 
     hcreate(MAX_HASH_TABLE_SIZE);
 
-    for (int i = 0; i < index_byte_size; ++i)
-    {
-
-        printf("\r%c[2K(%.2f%%) - [%s%s]\r", 27, ((100.0 * i) / index_byte_size), data[i].file_path, data[i].file_name);
-        fflush(stdout);
-        // unpack(data[i]);
-    }
+    extract_strategy[index](data, index_byte_size);
 
     free(data);
     hdestroy();
@@ -46,6 +55,8 @@ int main(int argc, char **argv)
 
 package_t *read_index(char *file_name)
 {
+
+    D("%s", file_name);
 
     struct stat st = {0};
     stat(file_name, &st);
@@ -159,4 +170,86 @@ void rec_mkdir(char *path)
 #else
     mkdir(path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 #endif
+}
+
+void extract_all(package_t *data, int size)
+{
+
+    for (int i = 0; i < size; ++i)
+    {
+
+        printf("\r%c[2K(%.2f%%) - [%s%s]\r", 27, ((100.0 * i) / size), data[i].file_path, data[i].file_name);
+        fflush(stdout);
+        unpack(data[i]);
+    }
+}
+
+void extract_icon(package_t *data, int size)
+{
+
+    D("%d", size);
+
+    char *path_list[] = {"UI\\itemicon\\", "UI\\skillicon\\", "UI\\uiicon\\"};
+
+    for (int i = 0; i < size; ++i)
+    {
+
+        if (in(data[i].file_path, path_list, 3))
+        {
+
+            printf("\r%c[2K(%.2f%%) - [%s%s]\r", 27, ((100.0 * i) / size), data[i].file_path, data[i].file_name);
+            fflush(stdout);
+            unpack(data[i]);
+        }
+    }
+}
+
+void extract_ride(package_t *data, int size)
+{
+
+    D("%d", size);
+
+    char *path_list[] = {"ride\\"};
+
+    for (int i = 0; i < size; ++i)
+    {
+
+        if (in(data[i].file_path, path_list, 1))
+        {
+
+            printf("\r%c[2K(%.2f%%) - [%s%s]\r", 27, ((100.0 * i) / size), data[i].file_path, data[i].file_name);
+            fflush(stdout);
+            unpack(data[i]);
+        }
+    }
+}
+
+void extract_data(package_t *data, int size)
+{
+
+    D("%d", size);
+
+    char *path_list[] = {"data\\db\\", "data\\Translate\\"};
+
+    for (int i = 0; i < size; ++i)
+    {
+
+        if (in(data[i].file_path, path_list, 2))
+        {
+
+            printf("\r%c[2K(%.2f%%) - [%s%s]\r", 27, ((100.0 * i) / size), data[i].file_path, data[i].file_name);
+            fflush(stdout);
+            unpack(data[i]);
+        }
+    }
+}
+
+bool in(char *s1, char *s2[], int size)
+{
+
+    for (int i = 0; i < size; ++i)
+        if (strcmp(s1, s2[i]) == 0)
+            return true;
+
+    return false;
 }
