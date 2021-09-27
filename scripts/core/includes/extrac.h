@@ -23,6 +23,13 @@
 
 #define DATA_SIZE(TOTAL_BYTES_READ) ((TOTAL_BYTES_READ - HEADER_SIZE - CRC_SIZE) / sizeof(package_t))
 
+#define UI_ITEM_ICON "UI\\itemicon\\"
+#define UI_SKILL_ICON "UI\\skillicon\\"
+#define UI_UI_ICON "UI\\uiicon\\"
+#define RIDE_MTA "ride\\"
+#define DATA_DB "data\\db\\"
+#define DATA_TRANSLATE "data\\Translate\\"
+
 typedef void (*strategy_fn_arr) (package_t *, int);
 
 #include "pkg.h"
@@ -32,6 +39,7 @@ void rec_mkdir(char *path);
 void unpack(package_t pkg_file);
 char *zlib_decompress(char *data, uInt decompressed_size, uInt compressed_size);
 bool in(char *s1, char *s2[], int size);
+void unpack_data(package_t *data, int index, int size);
 
 void extract_all(package_t *data, int size);
 void extract_icon(package_t *data, int size);

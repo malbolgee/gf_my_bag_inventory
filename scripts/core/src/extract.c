@@ -175,73 +175,42 @@ void rec_mkdir(char *path)
 void extract_all(package_t *data, int size)
 {
 
+    D("%d", size);
     for (int i = 0; i < size; ++i)
-    {
-
-        printf("\r%c[2K(%.2f%%) - [%s%s]\r", 27, ((100.0 * i) / size), data[i].file_path, data[i].file_name);
-        fflush(stdout);
-        unpack(data[i]);
-    }
+        unpack_data(data, i, size);
 }
 
 void extract_icon(package_t *data, int size)
 {
 
     D("%d", size);
-
-    char *path_list[] = {"UI\\itemicon\\", "UI\\skillicon\\", "UI\\uiicon\\"};
+    char *path_list[] = {UI_ITEM_ICON, UI_SKILL_ICON, UI_UI_ICON};
 
     for (int i = 0; i < size; ++i)
-    {
-
         if (in(data[i].file_path, path_list, 3))
-        {
-
-            printf("\r%c[2K(%.2f%%) - [%s%s]\r", 27, ((100.0 * i) / size), data[i].file_path, data[i].file_name);
-            fflush(stdout);
-            unpack(data[i]);
-        }
-    }
+            unpack_data(data, i, size);
 }
 
 void extract_ride(package_t *data, int size)
 {
 
     D("%d", size);
-
-    char *path_list[] = {"ride\\"};
+    char *path_list[] = {RIDE_MTA};
 
     for (int i = 0; i < size; ++i)
-    {
-
         if (in(data[i].file_path, path_list, 1))
-        {
-
-            printf("\r%c[2K(%.2f%%) - [%s%s]\r", 27, ((100.0 * i) / size), data[i].file_path, data[i].file_name);
-            fflush(stdout);
-            unpack(data[i]);
-        }
-    }
+            unpack_data(data, i, size);
 }
 
 void extract_data(package_t *data, int size)
 {
 
     D("%d", size);
-
-    char *path_list[] = {"data\\db\\", "data\\Translate\\"};
+    char *path_list[] = {DATA_DB, DATA_TRANSLATE};
 
     for (int i = 0; i < size; ++i)
-    {
-
         if (in(data[i].file_path, path_list, 2))
-        {
-
-            printf("\r%c[2K(%.2f%%) - [%s%s]\r", 27, ((100.0 * i) / size), data[i].file_path, data[i].file_name);
-            fflush(stdout);
-            unpack(data[i]);
-        }
-    }
+            unpack_data(data, i, size);
 }
 
 bool in(char *s1, char *s2[], int size)
@@ -252,4 +221,12 @@ bool in(char *s1, char *s2[], int size)
             return true;
 
     return false;
+}
+
+void unpack_data(package_t *data, int index, int size)
+{
+
+    printf("\r%c[2K(%.2f%%) - [%s%s]\r", 27, ((100.0 * index) / size), data[index].file_path, data[index].file_name);
+    fflush(stdout);
+    unpack(data[index]);
 }
