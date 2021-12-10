@@ -45,6 +45,7 @@ int main(int argc, char **argv)
 
     hcreate(MAX_HASH_TABLE_SIZE);
 
+    // printf("%d\n", index);
     extract_strategy[index](data, index_byte_size);
 
     free(data);
@@ -132,7 +133,20 @@ void unpack(package_t pkg_file)
 
     char *decompressed_data = zlib_decompress(data_buffer, pkg_file.unpacked_size, pkg_file.package_bytes);
 
-    char output_path[MAX_PATH_LENGTH] = OUTPUT_PATH_NAME;
+    const char *chosen_output_path = get_output_path();
+    const int has_custom_output_path = strlen(chosen_output_path);
+    const int output_path_size =
+            has_custom_output_path > 0 ? has_custom_output_path
+            + MAX_OUTPUT_PATH_SIZE + 1 : MAX_OUTPUT_PATH_SIZE;
+
+    char output_path[output_path_size];
+    memset(output_path, 0, output_path_size);
+
+    if (has_custom_output_path)
+        strncpy(output_path, chosen_output_path, has_custom_output_path + 1);
+    else
+        strncpy(output_path, DEFAULT_OUTPUT_PATH_NAME, DEFAULT_OUTPUT_PATH_SIZE);
+
     strcat(output_path, pkg_file.file_path);
 
 #ifndef _WIN32

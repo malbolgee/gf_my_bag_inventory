@@ -5,6 +5,7 @@
 #define CRC_SIZE sizeof(int)
 #define PKG_NAME_MAX_SIZE 11
 #define MAX_NUMBER_OF_PKGS 1123
+#define MAX_OUTPUT_PATH_SIZE 1024
 #define MAX_HASH_TABLE_SIZE ((int)((MAX_NUMBER_OF_PKGS * 0.60) + MAX_NUMBER_OF_PKGS))
 
 #define WIN_SEP '\\'
@@ -16,10 +17,8 @@
 #define OS_SEP UNIX_SEP
 #endif
 
-#define OUTPUT_PATH_NAME            \
-    {                               \
-        'o', 'u', 't', OS_SEP, '\0' \
-    }
+#define DEFAULT_OUTPUT_PATH_NAME "./out/"
+#define DEFAULT_OUTPUT_PATH_SIZE sizeof(DEFAULT_OUTPUT_PATH_NAME)
 
 #define DATA_SIZE(TOTAL_BYTES_READ) ((TOTAL_BYTES_READ - HEADER_SIZE - CRC_SIZE) / sizeof(package_t))
 
@@ -30,7 +29,7 @@
 #define DATA_DB "data\\db\\"
 #define DATA_TRANSLATE "data\\Translate\\"
 
-typedef void (*strategy_fn_arr) (package_t *, int);
+typedef void (*strategy_fn_arr)(package_t *, int);
 
 #include "pkg.h"
 

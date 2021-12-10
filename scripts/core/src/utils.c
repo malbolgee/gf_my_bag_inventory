@@ -15,7 +15,7 @@ void alloc_check(const void *mem, const char *message)
 void open_file_check(const void *mem)
 {
 
-    alloc_check(mem, "Couldn't open the file.");
+    alloc_check(mem, "Couldn't open the file");
 }
 
 void ensure(bool expression, char *message)
