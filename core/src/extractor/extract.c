@@ -4,16 +4,19 @@
 #include <stdbool.h>
 #include <search.h>
 #include <errno.h>
-#include <zlib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <argp.h>
-#include "../includes/pkg.h"
-#include "../includes/extrac.h"
-#include "../includes/utils.h"
-#include "../includes/parser.h"
+#include "../../includes/pkg.h"
+#include "../../includes/extrac.h"
+#include "../../includes/utils.h"
+#include "../../includes/parser.h"
 
-#include <time.h>
+#ifndef _WIN32
+    #include <zlib.h>
+#else
+    #include "../../../external/zlib/zlib.h"
+#endif
 
 ENTRY entry_data, *file_cache;
 
@@ -45,7 +48,6 @@ int main(int argc, char **argv)
 
     hcreate(MAX_HASH_TABLE_SIZE);
 
-    // printf("%d\n", index);
     extract_strategy[index](data, index_byte_size);
 
     free(data);
@@ -79,7 +81,7 @@ package_t *read_index(char *file_name)
     return data;
 }
 
-char *zlib_decompress(char *data, uInt decompressed_size, uInt compressed_size)
+char *zlib_decompress(char *data, unsigned int decompressed_size, unsigned int compressed_size)
 {
 
     char *decompressed_data = (char *)malloc(decompressed_size);

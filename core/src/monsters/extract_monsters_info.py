@@ -1,11 +1,10 @@
 import json
 from re import match
 from re import search
-from time import sleep
 
-t_monster = open(r"./ini_files/T_Monster.ini",
+t_monster = open(r"../../res/T_Monster.ini",
                  'r', encoding='ISO 8859-15')
-c_monster = open(r"./ini_files/C_Monster.ini",
+c_monster = open(r"../../res/C_Monster.ini",
                  'r', encoding='Big5', errors='ignore')
 
 # Name, HP, MP

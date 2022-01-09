@@ -2,8 +2,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../includes/pkg.h"
-#include "../includes/utils.h"
+#include "../../includes/pkg.h"
+#include "../../includes/utils.h"
 
 void alloc_check(const void *mem, const char *message)
 {

@@ -12,9 +12,9 @@
 #define UNIX_SEP '/'
 
 #ifdef _WIN32
-#define OS_SEP WIN_SEP
+    #define OS_SEP WIN_SEP
 #else
-#define OS_SEP UNIX_SEP
+    #define OS_SEP UNIX_SEP
 #endif
 
 #define DEFAULT_OUTPUT_PATH_NAME "./out/"
@@ -36,7 +36,7 @@ typedef void (*strategy_fn_arr)(package_t *, int);
 package_t *read_index(char *file_name);
 void rec_mkdir(char *path);
 void unpack(package_t pkg_file);
-char *zlib_decompress(char *data, uInt decompressed_size, uInt compressed_size);
+char *zlib_decompress(char *data, unsigned int decompressed_size, unsigned int compressed_size);
 bool in(char *s1, char *s2[], int size);
 void unpack_data(package_t *data, int index, int size);
 

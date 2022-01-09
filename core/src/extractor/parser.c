@@ -1,10 +1,10 @@
 #include <string.h>
-#include "../includes/parser.h"
+#include "../../includes/parser.h"
 
 const char *argp_program_version = "1.0.0";
 const char *argp_program_bug_adress = "victor.gomes@icomp.ufam.edu.br";
 static char doc[] = "Script used to extract game data.";
-static char args_doc[] = "[path/to/pkg.idx]";
+static char args_doc[] = "[absolute_path/to/pkg.idx]";
 static struct argp_option options[] = {
     {"all", 'a', 0, 0, "Extract Everything"},
     {"icon", 'i', 0, 0, "Extract the game item, skill and UI icons"},
